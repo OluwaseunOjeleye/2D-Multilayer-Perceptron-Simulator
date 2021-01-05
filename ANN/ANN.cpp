@@ -4,14 +4,15 @@ ANN::ANN() {
 
 }
 
-void ANN::create_Network(int no_features, std::vector<int> hidden_layers, int n_classes, double learning_rate, double bias, std::string activation_type) {
+void ANN::create_Network(int no_features, std::vector<int> hidden_layers, int n_classes, double learning_rate, double bias, std::string hidden_activation_type, std::string output_activation_type) {
 	this->no_layers = hidden_layers.size() + 2;
 	this->no_weights = no_layers - 1;
 	this->no_classes = n_classes;
 	this->no_features = no_features;
 	this->learning_rate = learning_rate;
 	this->Bias = bias;
-	this->activation_type = activation_type;
+	this->hidden_activation_type = hidden_activation_type;
+	this->output_activation_type = output_activation_type;
 
 	/******* Creating Network *******/
 	//initializing layers
@@ -89,65 +90,68 @@ void ANN::Feed_Forward(Sample Data) {
 
 	//Feed forwarding
 	for (int i = 0; i < no_weights; i++) {
-		layers[i + 1] = Activation_Function(activation_type, (weights[i] * layers[i]) + biases[i]);
+		if(i==no_weights-1){	//if error, check here
+			layers[i + 1] = Activation_Function(output_activation_type, (weights[i] * layers[i]) + biases[i]);
+		}
+		else{
+			layers[i + 1] = Activation_Function(hidden_activation_type, (weights[i] * layers[i]) + biases[i]);
+		}
 	}
 }
 
-void ANN::Back_Propagate(Matrix<double> desired_output) {
+void ANN::Back_Propagate(Matrix<double> desired_output, bool momentum) {
 	for (int i = no_weights - 1; i >= 0; i--) {
 		if (i == no_weights - 1) {			//last layer's error (Output error)
-			layers_error[i] = (desired_output - layers[i + 1]).hadamard_Product(Activation_Function(activation_type +"_derivative", (weights[i] * layers[i]) + biases[i]));
+			layers_error[i] = (desired_output - layers[i + 1]).hadamard_Product(Activation_Function(output_activation_type +"_derivative", (weights[i] * layers[i]) + biases[i]));
 		}
 		else {
-			layers_error[i] = (weights[i + 1].Transpose()*layers_error[i + 1]).hadamard_Product(Activation_Function(activation_type + "_derivative", (weights[i] * layers[i]) + biases[i]));
+			layers_error[i] = (weights[i + 1].Transpose()*layers_error[i + 1]).hadamard_Product(Activation_Function(hidden_activation_type + "_derivative", (weights[i] * layers[i]) + biases[i]));
 		}
 
-		delta_weights[i] = (layers_error[i] * layers[i].Transpose()); //current delta weight
-		delta_biases[i] = layers_error[i];	//current delta bias
+		Matrix<double> delta_weight = (layers_error[i] * layers[i].Transpose()); //current delta weight
+		Matrix<double> delta_bias = layers_error[i];	//current delta bias
 
-		weights[i] = weights[i] + (delta_weights[i] * learning_rate);
-		biases[i] = biases[i] + (delta_biases[i] * learning_rate);
+		if(!momentum){
+			weights[i] = weights[i] + (delta_weight * learning_rate);
+			biases[i] = biases[i] + (delta_bias * learning_rate);
+
+			//delta_weights[i] = delta_weight;	
+			//delta_biases[i] = delta_bias;	
+			delta_weights[i] = delta_weight * learning_rate;
+			delta_biases[i] = delta_bias * learning_rate;
+		}
+		else{
+			double beta = 0.99;
+
+			weights[i] = weights[i] + (delta_weight * learning_rate) + (delta_weights[i] * beta);
+			biases[i] = biases[i] + (delta_bias * learning_rate) + (delta_biases[i] * beta);
+
+			delta_weights[i] = delta_weight * learning_rate;
+			delta_biases[i] = delta_bias * learning_rate;	 
+			//delta_weights[i] = (delta_weight * learning_rate) + (delta_weights[i] * beta);
+			//delta_biases[i] = (delta_bias * learning_rate) + (delta_biases[i] * beta);
+		}
+
+		/*
+		delta_weights[i] = delta_weight;
+		delta_biases[i] = delta_bias;
+
+		or
+
+		delta_weights[i] = delta_weight * learning_rate; 
+		delta_biases[i] = delta_bias * learning_rate;
+		
+		or
+
+		delta_weights[i] = (delta_weight * learning_rate) + (delta_weights[i] * beta); 
+		delta_biases[i] = (delta_bias * learning_rate) + (delta_biases[i] * beta);
+		*/
 
 		/*
 		Matrix<double> delta_weight = (layers_error[i] * layers[i].Transpose())*learning_rate;
 		weights[i] = weights[i] + delta_weight;
 		biases[i] = biases[i] + (layers_error[i] * learning_rate);
 		*/
-	}
-}
-
-void ANN::Back_Propagate_momentum(Matrix<double> desired_output) {
-
-	for (int i = no_weights - 1; i >= 0; i--) {
-		if (i == no_weights - 1) {			//last layer's error (Output error)
-			layers_error[i] = (desired_output - layers[i + 1]).hadamard_Product(Activation_Function(activation_type + "_derivative", (weights[i] * layers[i]) + biases[i]));
-		}
-		else {
-			layers_error[i] = (weights[i + 1].Transpose()*layers_error[i + 1]).hadamard_Product(Activation_Function(activation_type + "_derivative", (weights[i] * layers[i]) + biases[i]));
-		}
-
-		Matrix<double> delta_weight = (layers_error[i] * layers[i].Transpose()); //current delta weight
-		Matrix<double> delta_bias = layers_error[i];	//current delta bias
-
-		/*if (i==no_weights-1) {
-			weights[i] = weights[i] + (delta_weight * learning_rate);
-			biases[i] = biases[i] + (delta_bias * learning_rate);
-			
-			delta_weights[i] = delta_weight;
-			delta_biases[i] = delta_bias;
-		}
-		else {
-		*/
-			Matrix<double> V_dW = (delta_weights[i] *0.9) + (delta_weight*0.1); //Beta=0.9
-			Matrix<double> V_dB = (delta_biases[i]*0.9) + (delta_bias*0.1);
-
-			weights[i] = weights[i] + (V_dW * learning_rate);
-			biases[i] = biases[i] + (V_dB * learning_rate);
-
-			delta_weights[i] = V_dW;
-			delta_biases[i] = V_dB;
-		//}
-		
 	}
 }
 
@@ -177,6 +181,10 @@ double ANN::get_biases() {
 
 double ANN::get_learning_rate() {
 	return learning_rate;
+}
+
+int ANN::get_no_Hidden_layers() {
+	return no_layers-2;
 }
 
 void ANN::print_Layers() {
@@ -227,6 +235,15 @@ double **ANN::get_hidden_layer_equations(int nth_hidden_layer) {
 	return weight;
 }
 
+
+void ANN::set_Hidden_Activation_Function(std::string hidden_activation_type){
+	this->hidden_activation_type = hidden_activation_type;
+}
+
+void ANN::set_Output_Activation_Function(std::string output_activation_type){
+	this->output_activation_type = output_activation_type;
+}
+
 void ANN::load_network(std::string filename) {
 	try {
 		std::ifstream inData(filename, std::ios::in);
@@ -235,7 +252,8 @@ void ANN::load_network(std::string filename) {
 		std::vector<int> layers_vec;
 		std::vector<Matrix<double>> weights_vec;
 		std::vector<Matrix<double>> biases_vec;
-		std::string activation_type;
+		//std::string hidden_activation_type;
+		//std::string output_activation_type;
 
 		std::string line;
 		int weight = 0, bias = 0, c_layers = 0;
@@ -246,8 +264,11 @@ void ANN::load_network(std::string filename) {
 				layers_vec.push_back(layers);
 				c_layers++;
 			}
-			else if (line == "Activation Function:") {
-				inData >> this->activation_type;
+			else if (line == "Hidden Layer Activation Function:") {
+				inData >> this->hidden_activation_type;
+			}
+			else if (line == "Output Layer Activation Function:") {
+				inData >> this->output_activation_type;
 			}
 			else if (line == "Learning Rate:") {
 				inData >> this->learning_rate;
@@ -331,8 +352,10 @@ void ANN::save_network(std::string filename) {
 	}
 	outData << std::endl;
 
-	outData << "Activation Function:" << std::endl;
-	outData << activation_type << std::endl<< std::endl;
+	outData << "Hidden Layer Activation Function:" << std::endl;
+	outData << hidden_activation_type << std::endl<< std::endl;
+	outData << "Output Layer Activation Function:" << std::endl;
+	outData << output_activation_type << std::endl<< std::endl;
 	outData << "Learning Rate:" << std::endl;
 	outData << learning_rate << std::endl << std::endl;
 

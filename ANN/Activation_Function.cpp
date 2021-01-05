@@ -15,7 +15,7 @@ double tan_h(const double param) {
 }
 
 double tanh_derivative(const double param) {
-	return (1 + param)*(1 - param);
+	return (1 + tan_h(param))*(1 - tan_h(param));
 }
 
 double relu(const double param) {

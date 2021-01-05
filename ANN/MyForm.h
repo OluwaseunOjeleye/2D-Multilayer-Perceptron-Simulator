@@ -1,7 +1,9 @@
 #pragma once
 
 #include <Windows.h>
+#include <sstream>
 #include <atlstr.h>
+#include <msclr\marshal_cppstd.h>
 #include <vector>
 #include <random>
 #include <time.h>
@@ -15,6 +17,7 @@ namespace Simulator {
 	using namespace System::Windows::Forms;
 	using namespace System::Data;
 	using namespace System::Drawing;
+	using namespace System::Windows::Forms::DataVisualization::Charting;
 
 	/// <summary>
 	/// Summary for MyForm
@@ -61,7 +64,7 @@ namespace Simulator {
 	private: System::Windows::Forms::TextBox^  textBox1;
 	private: System::Windows::Forms::TextBox^  textBox2;
 	private: System::Windows::Forms::CheckBox^  checkBox1;
-	private: System::Windows::Forms::TrackBar^  trackBar1;
+
 	private: System::Windows::Forms::ComboBox^  comboBox3;
 	private: System::Windows::Forms::Label^  label7;
 	private: System::Windows::Forms::Label^  label8;
@@ -73,6 +76,8 @@ namespace Simulator {
 	private: System::Windows::Forms::ToolStripMenuItem^  loadDataToolStripMenuItem;
 	private: System::Windows::Forms::ToolStripMenuItem^  saveDataToolStripMenuItem;
 	private: System::Windows::Forms::ToolStripMenuItem^  continuousWithMomentToolStripMenuItem;
+	private: System::Windows::Forms::DataVisualization::Charting::Chart^  chart1;
+	private: System::Windows::Forms::ComboBox^  comboBox4;
 
 	protected:
 
@@ -92,6 +97,9 @@ namespace Simulator {
 		/// </summary>
 		void InitializeComponent(void)
 		{
+			System::Windows::Forms::DataVisualization::Charting::ChartArea^  chartArea1 = (gcnew System::Windows::Forms::DataVisualization::Charting::ChartArea());
+			System::Windows::Forms::DataVisualization::Charting::Legend^  legend1 = (gcnew System::Windows::Forms::DataVisualization::Charting::Legend());
+			System::Windows::Forms::DataVisualization::Charting::Series^  series1 = (gcnew System::Windows::Forms::DataVisualization::Charting::Series());
 			this->pictureBox1 = (gcnew System::Windows::Forms::PictureBox());
 			this->comboBox1 = (gcnew System::Windows::Forms::ComboBox());
 			this->label1 = (gcnew System::Windows::Forms::Label());
@@ -106,6 +114,7 @@ namespace Simulator {
 			this->randomToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->trainingToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->continuousToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->continuousWithMomentToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->testingToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->testToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->clearToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
@@ -115,16 +124,16 @@ namespace Simulator {
 			this->textBox1 = (gcnew System::Windows::Forms::TextBox());
 			this->textBox2 = (gcnew System::Windows::Forms::TextBox());
 			this->checkBox1 = (gcnew System::Windows::Forms::CheckBox());
-			this->trackBar1 = (gcnew System::Windows::Forms::TrackBar());
 			this->comboBox3 = (gcnew System::Windows::Forms::ComboBox());
 			this->label7 = (gcnew System::Windows::Forms::Label());
 			this->label8 = (gcnew System::Windows::Forms::Label());
 			this->label9 = (gcnew System::Windows::Forms::Label());
 			this->textBox3 = (gcnew System::Windows::Forms::TextBox());
-			this->continuousWithMomentToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->chart1 = (gcnew System::Windows::Forms::DataVisualization::Charting::Chart());
+			this->comboBox4 = (gcnew System::Windows::Forms::ComboBox());
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->BeginInit();
 			this->menuStrip1->SuspendLayout();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->trackBar1))->BeginInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->chart1))->BeginInit();
 			this->SuspendLayout();
 			// 
 			// pictureBox1
@@ -177,7 +186,7 @@ namespace Simulator {
 			// label3
 			// 
 			this->label3->AutoSize = true;
-			this->label3->Location = System::Drawing::Point(884, 493);
+			this->label3->Location = System::Drawing::Point(885, 406);
 			this->label3->Name = L"label3";
 			this->label3->Size = System::Drawing::Size(51, 20);
 			this->label3->TabIndex = 3;
@@ -189,7 +198,7 @@ namespace Simulator {
 			this->menuStrip1->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(1) { this->processToolStripMenuItem });
 			this->menuStrip1->Location = System::Drawing::Point(0, 0);
 			this->menuStrip1->Name = L"menuStrip1";
-			this->menuStrip1->Size = System::Drawing::Size(1102, 33);
+			this->menuStrip1->Size = System::Drawing::Size(1195, 33);
 			this->menuStrip1->TabIndex = 5;
 			this->menuStrip1->Text = L"menuStrip1";
 			// 
@@ -207,14 +216,14 @@ namespace Simulator {
 			// loadDataToolStripMenuItem
 			// 
 			this->loadDataToolStripMenuItem->Name = L"loadDataToolStripMenuItem";
-			this->loadDataToolStripMenuItem->Size = System::Drawing::Size(252, 30);
+			this->loadDataToolStripMenuItem->Size = System::Drawing::Size(177, 30);
 			this->loadDataToolStripMenuItem->Text = L"Load Data";
 			this->loadDataToolStripMenuItem->Click += gcnew System::EventHandler(this, &MyForm::loadDataToolStripMenuItem_Click);
 			// 
 			// saveDataToolStripMenuItem
 			// 
 			this->saveDataToolStripMenuItem->Name = L"saveDataToolStripMenuItem";
-			this->saveDataToolStripMenuItem->Size = System::Drawing::Size(252, 30);
+			this->saveDataToolStripMenuItem->Size = System::Drawing::Size(177, 30);
 			this->saveDataToolStripMenuItem->Text = L"Save Data";
 			this->saveDataToolStripMenuItem->Click += gcnew System::EventHandler(this, &MyForm::saveDataToolStripMenuItem_Click);
 			// 
@@ -222,7 +231,7 @@ namespace Simulator {
 			// 
 			this->initializingToolStripMenuItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(1) { this->randomToolStripMenuItem });
 			this->initializingToolStripMenuItem->Name = L"initializingToolStripMenuItem";
-			this->initializingToolStripMenuItem->Size = System::Drawing::Size(252, 30);
+			this->initializingToolStripMenuItem->Size = System::Drawing::Size(177, 30);
 			this->initializingToolStripMenuItem->Text = L"Initializing";
 			// 
 			// randomToolStripMenuItem
@@ -239,7 +248,7 @@ namespace Simulator {
 					this->continuousWithMomentToolStripMenuItem
 			});
 			this->trainingToolStripMenuItem->Name = L"trainingToolStripMenuItem";
-			this->trainingToolStripMenuItem->Size = System::Drawing::Size(252, 30);
+			this->trainingToolStripMenuItem->Size = System::Drawing::Size(177, 30);
 			this->trainingToolStripMenuItem->Text = L"Training";
 			// 
 			// continuousToolStripMenuItem
@@ -249,11 +258,18 @@ namespace Simulator {
 			this->continuousToolStripMenuItem->Text = L"Continuous";
 			this->continuousToolStripMenuItem->Click += gcnew System::EventHandler(this, &MyForm::continuousToolStripMenuItem_Click);
 			// 
+			// continuousWithMomentToolStripMenuItem
+			// 
+			this->continuousWithMomentToolStripMenuItem->Name = L"continuousWithMomentToolStripMenuItem";
+			this->continuousWithMomentToolStripMenuItem->Size = System::Drawing::Size(298, 30);
+			this->continuousWithMomentToolStripMenuItem->Text = L"Continuous with Moment";
+			this->continuousWithMomentToolStripMenuItem->Click += gcnew System::EventHandler(this, &MyForm::continuousWithMomentToolStripMenuItem_Click);
+			// 
 			// testingToolStripMenuItem
 			// 
 			this->testingToolStripMenuItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(1) { this->testToolStripMenuItem });
 			this->testingToolStripMenuItem->Name = L"testingToolStripMenuItem";
-			this->testingToolStripMenuItem->Size = System::Drawing::Size(252, 30);
+			this->testingToolStripMenuItem->Size = System::Drawing::Size(177, 30);
 			this->testingToolStripMenuItem->Text = L"Testing";
 			// 
 			// testToolStripMenuItem
@@ -266,14 +282,14 @@ namespace Simulator {
 			// clearToolStripMenuItem
 			// 
 			this->clearToolStripMenuItem->Name = L"clearToolStripMenuItem";
-			this->clearToolStripMenuItem->Size = System::Drawing::Size(252, 30);
+			this->clearToolStripMenuItem->Size = System::Drawing::Size(177, 30);
 			this->clearToolStripMenuItem->Text = L"Clear";
 			this->clearToolStripMenuItem->Click += gcnew System::EventHandler(this, &MyForm::clearToolStripMenuItem_Click);
 			// 
 			// label4
 			// 
 			this->label4->AutoSize = true;
-			this->label4->Location = System::Drawing::Point(884, 536);
+			this->label4->Location = System::Drawing::Point(885, 449);
 			this->label4->Name = L"label4";
 			this->label4->Size = System::Drawing::Size(51, 20);
 			this->label4->TabIndex = 6;
@@ -322,18 +338,10 @@ namespace Simulator {
 			this->checkBox1->Text = L"Batch Normalization";
 			this->checkBox1->UseVisualStyleBackColor = true;
 			// 
-			// trackBar1
-			// 
-			this->trackBar1->Location = System::Drawing::Point(832, 621);
-			this->trackBar1->Name = L"trackBar1";
-			this->trackBar1->Size = System::Drawing::Size(260, 69);
-			this->trackBar1->TabIndex = 10;
-			this->trackBar1->Scroll += gcnew System::EventHandler(this, &MyForm::trackBar1_Scroll);
-			// 
 			// comboBox3
 			// 
 			this->comboBox3->FormattingEnabled = true;
-			this->comboBox3->Location = System::Drawing::Point(978, 382);
+			this->comboBox3->Location = System::Drawing::Point(853, 357);
 			this->comboBox3->Name = L"comboBox3";
 			this->comboBox3->Size = System::Drawing::Size(100, 28);
 			this->comboBox3->TabIndex = 11;
@@ -341,16 +349,16 @@ namespace Simulator {
 			// label7
 			// 
 			this->label7->AutoSize = true;
-			this->label7->Location = System::Drawing::Point(828, 390);
+			this->label7->Location = System::Drawing::Point(831, 323);
 			this->label7->Name = L"label7";
-			this->label7->Size = System::Drawing::Size(144, 20);
+			this->label7->Size = System::Drawing::Size(326, 20);
 			this->label7->TabIndex = 7;
-			this->label7->Text = L"Activation Function";
+			this->label7->Text = L"Hidden and Output Layer Activation Function";
 			// 
 			// label8
 			// 
 			this->label8->AutoSize = true;
-			this->label8->Location = System::Drawing::Point(884, 577);
+			this->label8->Location = System::Drawing::Point(885, 490);
 			this->label8->Name = L"label8";
 			this->label8->Size = System::Drawing::Size(51, 20);
 			this->label8->TabIndex = 6;
@@ -363,7 +371,7 @@ namespace Simulator {
 			this->label9->Name = L"label9";
 			this->label9->Size = System::Drawing::Size(111, 20);
 			this->label9->TabIndex = 7;
-			this->label9->Text = L"No of Neurons";
+			this->label9->Text = L"Hidden Layers";
 			// 
 			// textBox3
 			// 
@@ -372,20 +380,44 @@ namespace Simulator {
 			this->textBox3->Size = System::Drawing::Size(100, 26);
 			this->textBox3->TabIndex = 8;
 			// 
-			// continuousWithMomentToolStripMenuItem
+			// chart1
 			// 
-			this->continuousWithMomentToolStripMenuItem->Name = L"continuousWithMomentToolStripMenuItem";
-			this->continuousWithMomentToolStripMenuItem->Size = System::Drawing::Size(298, 30);
-			this->continuousWithMomentToolStripMenuItem->Text = L"Continuous with Moment";
-			this->continuousWithMomentToolStripMenuItem->Click += gcnew System::EventHandler(this, &MyForm::continuousWithMomentToolStripMenuItem_Click);
+			chartArea1->AxisX->MajorGrid->LineWidth = 0;
+			chartArea1->AxisY->MajorGrid->LineWidth = 0;
+			chartArea1->Name = L"ChartArea1";
+			this->chart1->ChartAreas->Add(chartArea1);
+			legend1->Name = L"Legend1";
+			this->chart1->Legends->Add(legend1);
+			this->chart1->Location = System::Drawing::Point(832, 543);
+			this->chart1->Name = L"chart1";
+			series1->ChartArea = L"ChartArea1";
+			series1->ChartType = System::Windows::Forms::DataVisualization::Charting::SeriesChartType::Spline;
+			series1->IsVisibleInLegend = false;
+			series1->Legend = L"Legend1";
+			series1->Name = L"Series1";
+			series1->XValueType = System::Windows::Forms::DataVisualization::Charting::ChartValueType::Double;
+			series1->YValueType = System::Windows::Forms::DataVisualization::Charting::ChartValueType::Double;
+			this->chart1->Series->Add(series1);
+			this->chart1->Size = System::Drawing::Size(351, 300);
+			this->chart1->TabIndex = 12;
+			this->chart1->Text = L"chart1";
+			// 
+			// comboBox4
+			// 
+			this->comboBox4->FormattingEnabled = true;
+			this->comboBox4->Location = System::Drawing::Point(978, 357);
+			this->comboBox4->Name = L"comboBox4";
+			this->comboBox4->Size = System::Drawing::Size(100, 28);
+			this->comboBox4->TabIndex = 11;
 			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(9, 20);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(1102, 863);
+			this->ClientSize = System::Drawing::Size(1195, 866);
+			this->Controls->Add(this->chart1);
+			this->Controls->Add(this->comboBox4);
 			this->Controls->Add(this->comboBox3);
-			this->Controls->Add(this->trackBar1);
 			this->Controls->Add(this->checkBox1);
 			this->Controls->Add(this->textBox2);
 			this->Controls->Add(this->textBox3);
@@ -410,7 +442,7 @@ namespace Simulator {
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->EndInit();
 			this->menuStrip1->ResumeLayout(false);
 			this->menuStrip1->PerformLayout();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->trackBar1))->EndInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->chart1))->EndInit();
 			this->ResumeLayout(false);
 			this->PerformLayout();
 
@@ -426,7 +458,7 @@ namespace Simulator {
 		int no_samples;
 
 		int no_features;
-		int no_neurons; //number of neuron per first hidden layer
+		int first_HL_no_neurons; //number of neuron per first hidden layer
 		int no_classes;
 
 		double **weight;
@@ -435,9 +467,9 @@ namespace Simulator {
 		bool trained;
 
 		//normalization data;
-		int Mean_x, Mean_y, Std_x, Std_y;
+		double Mean_x, Mean_y, Std_x, Std_y;
 
-		int trackbar_scale;
+		//int trackbar_scale;
 
 		/*******************************Member Methods**************************************/
 		//Initialize
@@ -452,10 +484,12 @@ namespace Simulator {
 		//Adding new sample
 		void Add_Sample(int selected_class, int x, int y);
 
+
 		//Batch-Normalization
 		void BatchNormalize();
 
 		//Continuous (Multilayer Delta Learning Rule)
+		void Training(bool with_momentum);
 		System::Void continuousToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e);
 		System::Void continuousWithMomentToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e);
 
@@ -469,6 +503,8 @@ namespace Simulator {
 		System::Void saveDataToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e);
 
 		// Form Methods
+		std::string get_Activation_Function_GUI(int SelectedIndex);	//get combobox string
+
 		//Painting PictureBox
 		System::Void pictureBox1_Paint(System::Object^  sender, System::Windows::Forms::PaintEventArgs^  e) {
 			Pen ^pen = gcnew Pen(Color::Black);
@@ -510,6 +546,7 @@ namespace Simulator {
 			for (int i = 1; i <= no_classes; i++) comboBox2->Items->Add(i.ToString());
 		}
 
+		/*
 		System::Void trackBar1_Scroll(System::Object^  sender, System::EventArgs^  e) {
 			bool increase = (trackBar1->Value > trackbar_scale) ? true : false;
 			int rate = 2;
@@ -527,9 +564,10 @@ namespace Simulator {
 			pictureBox1->Refresh();
 			Draw_Lines_n_samples();
 		}
+		*/
 
 		void clear_Data() {
-			for (int i = 0; i < this->no_neurons; i++) {
+			for (int i = 0; i < this->first_HL_no_neurons; i++) {
 				delete weight[i];
 			}
 			delete weight;
@@ -546,7 +584,7 @@ namespace Simulator {
 			no_samples = 0;
 			no_classes = 0;
 			no_features = 0;
-			no_neurons = 0;
+			first_HL_no_neurons = 0;
 
 			learning_rate = 0;
 			Bias = 1;
@@ -555,7 +593,7 @@ namespace Simulator {
 			Mean_x = 0; Mean_y = 0;
 			Std_x = 1; Std_y = 1;
 
-			trackbar_scale = 0;
+			//trackbar_scale = 0;
 
 
 			pictureBox1->Refresh();
@@ -572,6 +610,8 @@ namespace Simulator {
 			label3->Text = "";
 			label4->Text = "";
 			label8->Text = "";
+
+			this->chart1->Series[0]->Points->Clear(); 
 
 		}
 

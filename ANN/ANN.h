@@ -16,11 +16,10 @@ public:
 	ANN();
 	virtual ~ANN();
 
-	void create_Network(int no_features, std::vector<int> hidden_layers, int n_classes, double learning_rate, double bias, std::string activation_type);
+	void create_Network(int no_features, std::vector<int> hidden_layers, int n_classes, double learning_rate, double bias, std::string hidden_activation_type, std::string output_activation_type);
 	void initialize_weights();
 	void Feed_Forward(Sample Data);
-	void Back_Propagate(Matrix<double> desired_output);
-	void Back_Propagate_momentum(Matrix<double> desired_output);
+	void Back_Propagate(Matrix<double> desired_output, bool momentum);
 	double quadratic_Cost(const Matrix<double> &true_output, const Matrix<double> &predict_output);
 
 	Matrix<double> get_layer(int l);
@@ -28,6 +27,10 @@ public:
 	double **get_hidden_layer_equations(int nth_hidden_layer);
 	double get_biases();
 	double get_learning_rate();
+	int get_no_Hidden_layers();
+
+	void set_Hidden_Activation_Function(std::string hidden_activation_type);
+	void set_Output_Activation_Function(std::string output_activation_type);
 
 	void print_Layers();
 	void print_Weights();
@@ -54,7 +57,8 @@ private:
 	int no_features;
 	double learning_rate;
 	double Bias;
-	std::string activation_type;
+	std::string hidden_activation_type;
+	std::string output_activation_type;
 };
 
 #endif

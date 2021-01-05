@@ -9,6 +9,7 @@ void Simulator::MyForm::Initialize() {
 	comboBox1->DropDownStyle = ComboBoxStyle::DropDownList;
 	comboBox2->DropDownStyle = ComboBoxStyle::DropDownList;
 	comboBox3->DropDownStyle = ComboBoxStyle::DropDownList;
+	comboBox4->DropDownStyle = ComboBoxStyle::DropDownList;
 
 
 	for (int i = 2; i <= 10; i++) comboBox1->Items->Add(i.ToString());
@@ -18,14 +19,18 @@ void Simulator::MyForm::Initialize() {
 	comboBox3->Items->Add("ReLu");
 	comboBox3->Items->Add("Softplus");
 
+	comboBox4->Items->Add("Bipolar Sigmoid");
+	comboBox4->Items->Add("Tanh");
+	comboBox4->Items->Add("ReLu");
+	comboBox4->Items->Add("Softplus");
+
 	no_samples = 0;
 	no_classes = 0;
 	trained = false;
 
 	Mean_x = 0; Mean_y = 0;
 	Std_x = 1; Std_y = 1;
-
-	trackbar_scale = 0;
+	//trackbar_scale = 0;
 }
 
 //Drawing Lines and Samples
@@ -38,7 +43,7 @@ void Simulator::MyForm::Draw_Lines_n_samples() {
 	}
 
 	//drawing lines
-	for (int i = 0; i < no_neurons; i++) {
+	for (int i = 0; i < first_HL_no_neurons; i++) {
 		Pen ^pen = gcnew Pen(color[i]);
 		double w1 = weight[i][0];
 		double w2 = weight[i][1];
@@ -92,41 +97,51 @@ void Simulator::MyForm::Add_Sample(int selected_class, int x, int y) {
 	}
 }
 
+std::string Simulator::MyForm::get_Activation_Function_GUI(int SelectedIndex){
+	switch (SelectedIndex) {
+		case 0:
+			return "sigmoid";
+			break;
+
+		case 1:
+			return "tanh";
+			break;
+
+		case 2:
+			return "relu";
+			break;
+
+		case 3:
+			return "softplus";
+			break;
+
+		default:
+			return "sigmoid";
+	}
+}
+
 System::Void Simulator::MyForm::randomToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
-	this->no_neurons = Convert::ToInt64(this->textBox3->Text);
+	std::string layers_text = msclr::interop::marshal_as<std::string>(this->textBox3->Text);
+	std::vector<int> hidden_layers;
+	std::stringstream stream(layers_text);
+	int n;
+	while (stream >> n) {
+			hidden_layers.push_back(n);
+	}
+	this->first_HL_no_neurons = hidden_layers[0];
+
 	this->no_classes = no_classes;
 	this->no_features = Data[0].X.size();
 	this->learning_rate = Convert::ToDouble(this->textBox1->Text);
 	this->Bias = Convert::ToDouble(this->textBox2->Text);
 	this->trained = true;
 
-	std::vector<int> hidden_layers={no_neurons};
-
-	std::string activation_type;
-	switch (this->comboBox3->SelectedIndex) {
-		case 0:
-			activation_type="sigmoid";
-			break;
-
-		case 1:
-			activation_type = "tanh";
-			break;
-
-		case 2:
-			activation_type = "relu";
-			break;
-
-		case 3:
-			activation_type = "softplus";
-			break;
-
-		default:
-			activation_type = "sigmoid";
-	}
+	std::string hidden_activation_type=get_Activation_Function_GUI(this->comboBox3->SelectedIndex);
+	std::string output_activation_type=get_Activation_Function_GUI(this->comboBox4->SelectedIndex);
 
 	//Creating Network
 	this->network = new ANN();
-	this->network->create_Network(no_features, hidden_layers, no_classes, learning_rate, Bias, activation_type);
+	this->network->create_Network(no_features, hidden_layers, no_classes, learning_rate, Bias, hidden_activation_type, output_activation_type);
 	//initializing weights and bias
 	this->network->initialize_weights();
 
@@ -169,12 +184,17 @@ void Simulator::MyForm::BatchNormalize() {
 	Std_x = variance[0]; Std_y = variance[1];
 }
 
-//Continuous (Multilayer Delta Learning)
-System::Void Simulator::MyForm::continuousToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
+void Simulator::MyForm::Training(bool with_momentum){
 	int n_cycles = 0; double error;
 	if (checkBox1->Checked == true) {
 		this->BatchNormalize();
 	}
+	if(!trained){
+		network->set_Hidden_Activation_Function(get_Activation_Function_GUI(this->comboBox3->SelectedIndex));
+		network->set_Output_Activation_Function(get_Activation_Function_GUI(this->comboBox4->SelectedIndex));
+	}
+
+	this->chart1->Series[0]->Points->Clear();
 	trained = true;
 	while (1) {
 		error = 0;
@@ -192,7 +212,7 @@ System::Void Simulator::MyForm::continuousToolStripMenuItem_Click(System::Object
 			error += network->quadratic_Cost(desired_output, network->get_output_layer());
 
 			//backpropagation
-			network->Back_Propagate(desired_output);
+			network->Back_Propagate(desired_output, with_momentum);
 			weight=network->get_hidden_layer_equations(1); //get first hidden layer equation W and B
 		}
 
@@ -204,53 +224,26 @@ System::Void Simulator::MyForm::continuousToolStripMenuItem_Click(System::Object
 		this->label8->Text = "Error: " + error.ToString();
 		this->label8->Refresh();
 		std::cout << "no cycles=" << n_cycles << " error=" << error << std::endl;
-		if (error <= 0.001) {
+
+		this->chart1->Series["Series1"]->Points->AddXY((double)n_cycles/1000, error);
+		if (n_cycles < 500 || n_cycles % 500 == 0) this->chart1->Refresh();
+
+		if (error <= 0.01) {
 			break;
 		}
 	}
 	Draw_Lines_n_samples();
+	this->chart1->Refresh();
+}
+
+//Continuous (Multilayer Delta Learning)
+System::Void Simulator::MyForm::continuousToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
+	Training(false);
 }
 
 //Training- Continuous with momentum
 System::Void Simulator::MyForm::continuousWithMomentToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
-	int n_cycles = 0; double error;
-	if (checkBox1->Checked == true) {
-		this->BatchNormalize();
-	}
-	trained = true;
-	while (1) {
-		error = 0;
-		for (int c = 0; c < no_samples; c++) {
-			//feed_forwarding input X
-			network->Feed_Forward(Train_Data[c]);
-
-			//setting desired output into matrix
-			std::vector<double> d;
-			for (int i = 0; i < no_classes; i++) Train_Data[c].class_id == i ? d.push_back(1) : d.push_back(0);
-			Matrix<double> desired_output(d);
-			desired_output = desired_output.Transpose();
-
-			//calculating error
-			error += network->quadratic_Cost(desired_output, network->get_output_layer());
-
-			//backpropagation
-			network->Back_Propagate_momentum(desired_output);
-			weight = network->get_hidden_layer_equations(1); //get first hidden layer equation W and B
-		}
-
-		n_cycles++;
-		this->label4->Text = "no of cycles: " + n_cycles.ToString();
-		this->label4->Refresh();
-
-		pictureBox1->Refresh();
-		this->label8->Text = "Error: " + error.ToString();
-		this->label8->Refresh();
-		std::cout << "no cycles=" << n_cycles << " error=" << error << std::endl;
-		if (error <= 0.001) {
-			break;
-		}
-	}
-	Draw_Lines_n_samples();
+	Training(true);
 }
 
 //Classifier
@@ -284,7 +277,7 @@ System::Void Simulator::MyForm::testToolStripMenuItem_Click(System::Object^  sen
 			for (i = 0; i < no_classes; i++) {
 				if (output_layer.get_Element(i, 0) >= 0.7) break;
 			}
-			SolidBrush ^brush = gcnew SolidBrush(Color::FromArgb(125, color[i].R, color[i].G, color[i].B));
+			SolidBrush ^brush = gcnew SolidBrush(Color::FromArgb(70, color[i].R, color[i].G, color[i].B));
 			graphics->FillRectangle(brush, x, y, 6, 6);
 		}
 	}
@@ -305,14 +298,17 @@ System::Void Simulator::MyForm::loadDataToolStripMenuItem_Click(System::Object^ 
 
 	//loading member data to simulator
 	weight = network->get_hidden_layer_equations(1);
-	this->no_neurons = network->get_layer(1).get_Row();
+	this->first_HL_no_neurons = network->get_layer(1).get_Row();
 	this->no_classes = network->get_output_layer().get_Row();
 	this->no_features = network->get_layer(0).get_Row();
 	this->learning_rate = network->get_learning_rate();
 	this->Bias = network->get_biases();
-	this->trained = true;
+	this->trained = false;
 
-	this->textBox3->Text = Convert::ToString(this->no_neurons);
+	for (int i = 1; i <= network->get_no_Hidden_layers(); i++) {
+		this->textBox3->Text+= Convert::ToString(network->get_layer(i).get_Row()) + " ";
+	}
+
 	this->textBox1->Text= Convert::ToString(this->learning_rate);
 	this->textBox2->Text= Convert::ToString(this->Bias);
 	comboBox1->SelectedIndex = this->no_classes-2;

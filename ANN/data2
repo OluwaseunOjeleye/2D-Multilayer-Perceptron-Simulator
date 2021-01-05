@@ -5,7 +5,10 @@ Layer 1
 Layer 2
 2
 
-Activation Function:
+Hidden Layer Activation Function:
+sigmoid
+
+Output Layer Activation Function:
 sigmoid
 
 Learning Rate:
