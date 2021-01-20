@@ -18,20 +18,20 @@ double tanh_derivative(const double param) {
 	return (1 + tan_h(param))*(1 - tan_h(param));
 }
 
-double relu(const double param) {
-	return (param <= 0 ? 0 : param);
+double leaky_relu(const double param) {
+	return (param <= 0 ? 0.01*param : param);
 }
 
-double relu_derivative(const double param) {
-	return (param <= 0 ? 0 : 1);
+double leaky_relu_derivative(const double param) {
+	return (param <= 0 ? 0.01 : 1);
 }
 
-double softplus(const double param) {
-	return (log(1 + exp(param)));
+double swish(const double param) {
+	return param * sigmoid(param);
 }
 
-double softplus_derivative(const double param) {
-	return (1 / (1.0 + exp(-param)));
+double swish_derivative(const double param) {
+	return swish(param) + (sigmoid(param)*(1 - swish(param)));
 }
 
 
@@ -40,12 +40,12 @@ Matrix<double> Activation_Function(const std::string &string, const Matrix<doubl
 	{
 		{ "sigmoid", sigmoid},
 		{"sigmoid_derivative", sigmoid_derivative},
-		{"relu", relu},
-		{"relu_derivative", relu_derivative},
+		{"leaky_relu", leaky_relu},
+		{"leaky_relu_derivative", leaky_relu_derivative},
 		{"tanh", tan_h},
 		{"tanh_derivative", tanh_derivative},
-		{"softplus", softplus},
-		{"softplus_derivative", softplus_derivative}
+		{"swish", swish},
+		{"swish_derivative", swish_derivative}
 	};
 
 	Matrix<double> Result(matrix.get_Row(), matrix.get_Column());

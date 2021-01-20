@@ -1,40 +1,18 @@
-﻿  Process.cpp
-c:\users\ofuge\documents\seun project\ann-multilayer v2\ann\myform.h(515): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-c:\users\ofuge\documents\seun project\ann-multilayer v2\ann\myform.h(519): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-c:\users\ofuge\documents\seun project\ann-multilayer v2\ann\process.cpp(42): warning C4244: 'argument': conversion from '_Ty' to 'int', possible loss of data
+﻿  ANN.cpp
+c:\users\ofuge\documents\seun project\ann-multilayer v3\ann\ann.cpp(8): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+c:\users\ofuge\documents\seun project\ann-multilayer v3\ann\ann.cpp(181): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+c:\users\ofuge\documents\seun project\ann-multilayer v3\ann\ann.cpp(182): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+c:\users\ofuge\documents\seun project\ann-multilayer v3\ann\matrix.h(93): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+  c:\users\ofuge\documents\seun project\ann-multilayer v3\ann\matrix.h(91): note: while compiling class template member function 'Matrix<double>::Matrix(std::vector<double,std::allocator<_Ty>>)'
           with
           [
               _Ty=double
           ]
-c:\users\ofuge\documents\seun project\ann-multilayer v2\ann\process.cpp(65): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
-c:\users\ofuge\documents\seun project\ann-multilayer v2\ann\process.cpp(134): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
-c:\users\ofuge\documents\seun project\ann-multilayer v2\ann\process.cpp(183): warning C4244: '=': conversion from '_Ty' to 'int', possible loss of data
+  c:\users\ofuge\documents\seun project\ann-multilayer v3\ann\ann.cpp(88): note: see reference to function template instantiation 'Matrix<double>::Matrix(std::vector<double,std::allocator<_Ty>>)' being compiled
           with
           [
               _Ty=double
           ]
-c:\users\ofuge\documents\seun project\ann-multilayer v2\ann\process.cpp(184): warning C4244: '=': conversion from '_Ty' to 'int', possible loss of data
-          with
-          [
-              _Ty=double
-          ]
-c:\users\ofuge\documents\seun project\ann-multilayer v2\ann\process.cpp(288): warning C4244: 'argument': conversion from '_Ty' to 'int', possible loss of data
-          with
-          [
-              _Ty=double
-          ]
-c:\users\ofuge\documents\seun project\ann-multilayer v2\ann\process.cpp(342): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
-c:\users\ofuge\documents\seun project\ann-multilayer v2\ann\matrix.h(93): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
-  c:\users\ofuge\documents\seun project\ann-multilayer v2\ann\matrix.h(91): note: while compiling class template member function 'Matrix<double>::Matrix(std::vector<double,std::allocator<_Ty>>)'
-          with
-          [
-              _Ty=double
-          ]
-  c:\users\ofuge\documents\seun project\ann-multilayer v2\ann\process.cpp(208): note: see reference to function template instantiation 'Matrix<double>::Matrix(std::vector<double,std::allocator<_Ty>>)' being compiled
-          with
-          [
-              _Ty=double
-          ]
-  c:\users\ofuge\documents\seun project\ann-multilayer v2\ann\process.cpp(208): note: see reference to class template instantiation 'Matrix<double>' being compiled
+  c:\users\ofuge\documents\seun project\ann-multilayer v3\ann\ann.cpp(19): note: see reference to class template instantiation 'Matrix<double>' being compiled
   Activation_Function.obj : MSIL module encountered; incremental linking is disabled for MSIL; performing full link
-  ANN.vcxproj -> C:\Users\Ofuge\Documents\Seun Project\ANN-Multilayer v2\x64\Debug\ANN.exe
+  ANN.vcxproj -> C:\Users\Ofuge\Documents\Seun Project\ANN-Multilayer v3\x64\Debug\ANN.exe

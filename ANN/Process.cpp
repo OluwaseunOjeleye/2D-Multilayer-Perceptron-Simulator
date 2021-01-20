@@ -6,6 +6,9 @@ void Simulator::MyForm::Initialize() {
 	color[0] = Color::Red; color[1] = Color::Green; color[2] = Color::Blue; color[3] = Color::Brown; color[4] = Color::Cyan;
 	color[5] = Color::Yellow; color[6] = Color::Indigo; color[7] = Color::Purple; color[8] = Color::Firebrick; color[9] = Color::OrangeRed;
 
+	Test_Sample_Size = 4;
+	Test_Output = new int[((pictureBox1->Width / Test_Sample_Size) + 1)*((pictureBox1->Height/ Test_Sample_Size)+1)];
+
 	comboBox1->DropDownStyle = ComboBoxStyle::DropDownList;
 	comboBox2->DropDownStyle = ComboBoxStyle::DropDownList;
 	comboBox3->DropDownStyle = ComboBoxStyle::DropDownList;
@@ -16,17 +19,18 @@ void Simulator::MyForm::Initialize() {
 
 	comboBox3->Items->Add("Bipolar Sigmoid");
 	comboBox3->Items->Add("Tanh");
-	comboBox3->Items->Add("ReLu");
-	comboBox3->Items->Add("Softplus");
+	comboBox3->Items->Add("Leaky ReLu");
+	comboBox3->Items->Add("Swish");
 
 	comboBox4->Items->Add("Bipolar Sigmoid");
 	comboBox4->Items->Add("Tanh");
-	comboBox4->Items->Add("ReLu");
-	comboBox4->Items->Add("Softplus");
+	comboBox4->Items->Add("Leaky ReLu");
+	comboBox4->Items->Add("Swish");
 
 	no_samples = 0;
 	no_classes = 0;
 	trained = false;
+	test_state = false;
 
 	Mean_x = 0; Mean_y = 0;
 	Std_x = 1; Std_y = 1;
@@ -34,15 +38,18 @@ void Simulator::MyForm::Initialize() {
 }
 
 //Drawing Lines and Samples
-void Simulator::MyForm::Draw_Lines_n_samples() {
+void Simulator::MyForm::Draw_Samples() {
 	//drawing samples
 	Graphics ^graphics = pictureBox1->CreateGraphics();
 	for (int i = 0; i < no_samples; i++) {
 		SolidBrush ^brush = gcnew SolidBrush(color[Data[i].class_id]);
 		graphics->FillRectangle(brush, (pictureBox1->Width / 2) + Data[i].X[0], (pictureBox1->Height / 2) - Data[i].X[1], 3, 3);
 	}
+}
 
+void Simulator::MyForm::Draw_Lines() {
 	//drawing lines
+	Graphics ^graphics = pictureBox1->CreateGraphics();
 	for (int i = 0; i < first_HL_no_neurons; i++) {
 		Pen ^pen = gcnew Pen(color[i]);
 		double w1 = weight[i][0];
@@ -50,7 +57,7 @@ void Simulator::MyForm::Draw_Lines_n_samples() {
 		double w3 = weight[i][2];
 
 		//normalizing data
-		double x1 = ((double)(pictureBox1->Width / -2)-Mean_x)/ Std_x;
+		double x1 = ((double)(pictureBox1->Width / -2) - Mean_x) / Std_x;
 		double x2 = ((double)(pictureBox1->Width / 2) - Mean_x) / Std_x;
 
 		double y1 = (-(w1 *x1) - (Bias*w3)) / w2;
@@ -60,10 +67,7 @@ void Simulator::MyForm::Draw_Lines_n_samples() {
 		y1 = (y1*Std_y) + Mean_y;
 		y2 = (y2*Std_y) + Mean_y;
 
-		//double y1 = (-(w1 *((double)(pictureBox1->Width / -2))) - (Bias*w3)) / w2;
-		//double y2 = (-(w1 *((double)(pictureBox1->Width / 2))) - (Bias*w3)) / w2;
 		graphics->DrawLine(pen, 0, (pictureBox1->Height - y1) - (pictureBox1->Height / 2), pictureBox1->Width, (pictureBox1->Height - y2) - (pictureBox1->Height / 2));
-		//graphics->DrawLine(pen, 0, (pictureBox1->Height / 2) - y1, pictureBox1->Width, (pictureBox1->Height / 2) - y2);
 	}
 }
 
@@ -108,11 +112,11 @@ std::string Simulator::MyForm::get_Activation_Function_GUI(int SelectedIndex){
 			break;
 
 		case 2:
-			return "relu";
+			return "leaky_relu";
 			break;
 
 		case 3:
-			return "softplus";
+			return "swish";
 			break;
 
 		default:
@@ -147,7 +151,8 @@ System::Void Simulator::MyForm::randomToolStripMenuItem_Click(System::Object^  s
 
 	weight = network->get_hidden_layer_equations(1);
 	pictureBox1->Refresh();
-	Draw_Lines_n_samples();
+	Draw_Lines(); Draw_Samples();
+
 }
 
 //Batch Normalization Of Data
@@ -184,6 +189,7 @@ void Simulator::MyForm::BatchNormalize() {
 	Std_x = variance[0]; Std_y = variance[1];
 }
 
+//Training
 void Simulator::MyForm::Training(bool with_momentum){
 	int n_cycles = 0; double error;
 	if (checkBox1->Checked == true) {
@@ -232,7 +238,7 @@ void Simulator::MyForm::Training(bool with_momentum){
 			break;
 		}
 	}
-	Draw_Lines_n_samples();
+	Draw_Lines(); Draw_Samples();
 	this->chart1->Refresh();
 }
 
@@ -248,17 +254,17 @@ System::Void Simulator::MyForm::continuousWithMomentToolStripMenuItem_Click(Syst
 
 //Classifier
 System::Void Simulator::MyForm::testToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
-	pictureBox1->Refresh();
-	Graphics ^graphics = pictureBox1->CreateGraphics();
+	test_state = true;
 
 	if (checkBox1->Checked == true) {
 		this->BatchNormalize();
 	}
 
-	for (int x = 0; x < pictureBox1->Width; x += 6) {
-		for (int y = 0; y < pictureBox1->Height; y += 6) {
-			double test_x = x + 3;
-			double test_y = y + 3;
+	int i = 0;
+	for (int x = 0; x < pictureBox1->Width; x += Test_Sample_Size) {
+		for (int y = 0; y < pictureBox1->Height; y += Test_Sample_Size) {
+			double test_x = x + (Test_Sample_Size/2);
+			double test_y = y + (Test_Sample_Size/2);
 
 			//Converting to graph scale
 			test_x = test_x - (pictureBox1->Width / 2);
@@ -273,28 +279,31 @@ System::Void Simulator::MyForm::testToolStripMenuItem_Click(System::Object^  sen
 
 			network->Feed_Forward(data);
 			Matrix<double> output_layer = network->get_output_layer();
-			int i;
-			for (i = 0; i < no_classes; i++) {
-				if (output_layer.get_Element(i, 0) >= 0.7) break;
+			int index;
+			for (index = 0; index < no_classes; index++) {
+				if (output_layer.get_Element(index, 0) >= 0.7) break;
 			}
-			SolidBrush ^brush = gcnew SolidBrush(Color::FromArgb(70, color[i].R, color[i].G, color[i].B));
-			graphics->FillRectangle(brush, x, y, 6, 6);
+			Test_Output[i] = index;
+			i++;
 		}
 	}
-
-	//drawing samples
-	for (int i = 0; i < no_samples; i++) {
-		SolidBrush ^brush = gcnew SolidBrush(color[Data[i].class_id]);
-		graphics->FillRectangle(brush, (pictureBox1->Width / 2) + Data[i].X[0], (pictureBox1->Height / 2) - Data[i].X[1], 3, 3);
-	}
+	//MessageBox::Show("Done");
+	pictureBox1->Refresh();
 }
 
 //Load network and data from file
 System::Void Simulator::MyForm::loadDataToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
-	//this->clear_Data();
 	//creating new network;
+	const char *filename="data";
+	
+	System::IO::DirectoryInfo^ info = gcnew System::IO::DirectoryInfo(System::IO::Directory::GetCurrentDirectory());
+	msclr::interop::marshal_context ^ context = gcnew msclr::interop::marshal_context();
+	if (openFileDialog1->ShowDialog() == System::Windows::Forms::DialogResult::OK) {
+		filename = context->marshal_as<const char*>(openFileDialog1->FileName);
+	}
+	
 	network = new ANN();
-	network->load_network("data");
+	network->load_network(filename);
 
 	//loading member data to simulator
 	weight = network->get_hidden_layer_equations(1);
@@ -315,7 +324,7 @@ System::Void Simulator::MyForm::loadDataToolStripMenuItem_Click(System::Object^ 
 
 	//loading samples in file to initial variable
 	try {
-		std::ifstream inData("data", std::ios::in);
+		std::ifstream inData(filename, std::ios::in);
 		if (!inData) throw std::ios::failure("Error opening file!");
 
 		std::vector<Sample> samples_vec;
@@ -348,7 +357,7 @@ System::Void Simulator::MyForm::loadDataToolStripMenuItem_Click(System::Object^ 
 		}
 
 		pictureBox1->Refresh();
-		Draw_Lines_n_samples();
+		Draw_Lines(); Draw_Samples();
 	}
 	catch (const std::exception& e) {
 		std::cout << e.what() << std::endl;

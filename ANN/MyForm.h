@@ -79,6 +79,29 @@ namespace Simulator {
 	private: System::Windows::Forms::DataVisualization::Charting::Chart^  chart1;
 	private: System::Windows::Forms::ComboBox^  comboBox4;
 
+	private: System::Windows::Forms::ToolStripMenuItem^  displayToolStripMenuItem;
+	private: System::Windows::Forms::ToolStripMenuItem^  showSamplesToolStripMenuItem;
+	private: System::Windows::Forms::ToolStripMenuItem^  showLinesToolStripMenuItem1;
+	private: System::Windows::Forms::Panel^  panel1;
+	private: System::Windows::Forms::Label^  label10;
+	private: System::Windows::Forms::Panel^  panel2;
+	private: System::Windows::Forms::Label^  label11;
+	private: System::Windows::Forms::Panel^  panel3;
+	private: System::Windows::Forms::Panel^  panel4;
+	private: System::Windows::Forms::Panel^  panel5;
+	private: System::Windows::Forms::Label^  label12;
+	private: System::Windows::Forms::OpenFileDialog^  openFileDialog1;
+
+
+
+
+
+
+
+
+
+
+
 	protected:
 
 
@@ -97,9 +120,9 @@ namespace Simulator {
 		/// </summary>
 		void InitializeComponent(void)
 		{
-			System::Windows::Forms::DataVisualization::Charting::ChartArea^  chartArea1 = (gcnew System::Windows::Forms::DataVisualization::Charting::ChartArea());
-			System::Windows::Forms::DataVisualization::Charting::Legend^  legend1 = (gcnew System::Windows::Forms::DataVisualization::Charting::Legend());
-			System::Windows::Forms::DataVisualization::Charting::Series^  series1 = (gcnew System::Windows::Forms::DataVisualization::Charting::Series());
+			System::Windows::Forms::DataVisualization::Charting::ChartArea^  chartArea4 = (gcnew System::Windows::Forms::DataVisualization::Charting::ChartArea());
+			System::Windows::Forms::DataVisualization::Charting::Legend^  legend4 = (gcnew System::Windows::Forms::DataVisualization::Charting::Legend());
+			System::Windows::Forms::DataVisualization::Charting::Series^  series4 = (gcnew System::Windows::Forms::DataVisualization::Charting::Series());
 			this->pictureBox1 = (gcnew System::Windows::Forms::PictureBox());
 			this->comboBox1 = (gcnew System::Windows::Forms::ComboBox());
 			this->label1 = (gcnew System::Windows::Forms::Label());
@@ -118,6 +141,9 @@ namespace Simulator {
 			this->testingToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->testToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->clearToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->displayToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->showSamplesToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->showLinesToolStripMenuItem1 = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->label4 = (gcnew System::Windows::Forms::Label());
 			this->label5 = (gcnew System::Windows::Forms::Label());
 			this->label6 = (gcnew System::Windows::Forms::Label());
@@ -131,14 +157,29 @@ namespace Simulator {
 			this->textBox3 = (gcnew System::Windows::Forms::TextBox());
 			this->chart1 = (gcnew System::Windows::Forms::DataVisualization::Charting::Chart());
 			this->comboBox4 = (gcnew System::Windows::Forms::ComboBox());
+			this->panel1 = (gcnew System::Windows::Forms::Panel());
+			this->label10 = (gcnew System::Windows::Forms::Label());
+			this->panel2 = (gcnew System::Windows::Forms::Panel());
+			this->label11 = (gcnew System::Windows::Forms::Label());
+			this->panel3 = (gcnew System::Windows::Forms::Panel());
+			this->label12 = (gcnew System::Windows::Forms::Label());
+			this->panel4 = (gcnew System::Windows::Forms::Panel());
+			this->panel5 = (gcnew System::Windows::Forms::Panel());
+			this->openFileDialog1 = (gcnew System::Windows::Forms::OpenFileDialog());
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->BeginInit();
 			this->menuStrip1->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->chart1))->BeginInit();
+			this->panel1->SuspendLayout();
+			this->panel2->SuspendLayout();
+			this->panel3->SuspendLayout();
+			this->panel4->SuspendLayout();
+			this->panel5->SuspendLayout();
 			this->SuspendLayout();
 			// 
 			// pictureBox1
 			// 
-			this->pictureBox1->Location = System::Drawing::Point(18, 43);
+			this->pictureBox1->BackColor = System::Drawing::Color::White;
+			this->pictureBox1->Location = System::Drawing::Point(15, 8);
 			this->pictureBox1->Margin = System::Windows::Forms::Padding(4, 5, 4, 5);
 			this->pictureBox1->Name = L"pictureBox1";
 			this->pictureBox1->Size = System::Drawing::Size(800, 800);
@@ -151,7 +192,7 @@ namespace Simulator {
 			// comboBox1
 			// 
 			this->comboBox1->FormattingEnabled = true;
-			this->comboBox1->Location = System::Drawing::Point(978, 54);
+			this->comboBox1->Location = System::Drawing::Point(151, 50);
 			this->comboBox1->Name = L"comboBox1";
 			this->comboBox1->Size = System::Drawing::Size(100, 28);
 			this->comboBox1->TabIndex = 1;
@@ -160,7 +201,7 @@ namespace Simulator {
 			// label1
 			// 
 			this->label1->AutoSize = true;
-			this->label1->Location = System::Drawing::Point(828, 57);
+			this->label1->Location = System::Drawing::Point(25, 50);
 			this->label1->Name = L"label1";
 			this->label1->Size = System::Drawing::Size(107, 20);
 			this->label1->TabIndex = 2;
@@ -169,7 +210,7 @@ namespace Simulator {
 			// label2
 			// 
 			this->label2->AutoSize = true;
-			this->label2->Location = System::Drawing::Point(825, 107);
+			this->label2->Location = System::Drawing::Point(18, 47);
 			this->label2->Name = L"label2";
 			this->label2->Size = System::Drawing::Size(150, 20);
 			this->label2->TabIndex = 2;
@@ -178,7 +219,7 @@ namespace Simulator {
 			// comboBox2
 			// 
 			this->comboBox2->FormattingEnabled = true;
-			this->comboBox2->Location = System::Drawing::Point(981, 104);
+			this->comboBox2->Location = System::Drawing::Point(174, 44);
 			this->comboBox2->Name = L"comboBox2";
 			this->comboBox2->Size = System::Drawing::Size(97, 28);
 			this->comboBox2->TabIndex = 1;
@@ -186,19 +227,24 @@ namespace Simulator {
 			// label3
 			// 
 			this->label3->AutoSize = true;
-			this->label3->Location = System::Drawing::Point(885, 406);
+			this->label3->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 11, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label3->Location = System::Drawing::Point(78, 130);
 			this->label3->Name = L"label3";
-			this->label3->Size = System::Drawing::Size(51, 20);
+			this->label3->Size = System::Drawing::Size(70, 26);
 			this->label3->TabIndex = 3;
 			this->label3->Text = L"label3";
 			// 
 			// menuStrip1
 			// 
 			this->menuStrip1->ImageScalingSize = System::Drawing::Size(24, 24);
-			this->menuStrip1->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(1) { this->processToolStripMenuItem });
+			this->menuStrip1->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(2) {
+				this->processToolStripMenuItem,
+					this->displayToolStripMenuItem
+			});
 			this->menuStrip1->Location = System::Drawing::Point(0, 0);
 			this->menuStrip1->Name = L"menuStrip1";
-			this->menuStrip1->Size = System::Drawing::Size(1195, 33);
+			this->menuStrip1->Size = System::Drawing::Size(1453, 33);
 			this->menuStrip1->TabIndex = 5;
 			this->menuStrip1->Text = L"menuStrip1";
 			// 
@@ -275,8 +321,8 @@ namespace Simulator {
 			// testToolStripMenuItem
 			// 
 			this->testToolStripMenuItem->Name = L"testToolStripMenuItem";
-			this->testToolStripMenuItem->Size = System::Drawing::Size(126, 30);
-			this->testToolStripMenuItem->Text = L"Test";
+			this->testToolStripMenuItem->Size = System::Drawing::Size(181, 30);
+			this->testToolStripMenuItem->Text = L"Show Area";
 			this->testToolStripMenuItem->Click += gcnew System::EventHandler(this, &MyForm::testToolStripMenuItem_Click);
 			// 
 			// clearToolStripMenuItem
@@ -286,19 +332,45 @@ namespace Simulator {
 			this->clearToolStripMenuItem->Text = L"Clear";
 			this->clearToolStripMenuItem->Click += gcnew System::EventHandler(this, &MyForm::clearToolStripMenuItem_Click);
 			// 
+			// displayToolStripMenuItem
+			// 
+			this->displayToolStripMenuItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(2) {
+				this->showSamplesToolStripMenuItem,
+					this->showLinesToolStripMenuItem1
+			});
+			this->displayToolStripMenuItem->Name = L"displayToolStripMenuItem";
+			this->displayToolStripMenuItem->Size = System::Drawing::Size(82, 29);
+			this->displayToolStripMenuItem->Text = L"Display";
+			// 
+			// showSamplesToolStripMenuItem
+			// 
+			this->showSamplesToolStripMenuItem->Name = L"showSamplesToolStripMenuItem";
+			this->showSamplesToolStripMenuItem->Size = System::Drawing::Size(212, 30);
+			this->showSamplesToolStripMenuItem->Text = L"Show Samples";
+			this->showSamplesToolStripMenuItem->Click += gcnew System::EventHandler(this, &MyForm::showSamplesToolStripMenuItem_Click);
+			// 
+			// showLinesToolStripMenuItem1
+			// 
+			this->showLinesToolStripMenuItem1->Name = L"showLinesToolStripMenuItem1";
+			this->showLinesToolStripMenuItem1->Size = System::Drawing::Size(212, 30);
+			this->showLinesToolStripMenuItem1->Text = L"Show Lines";
+			this->showLinesToolStripMenuItem1->Click += gcnew System::EventHandler(this, &MyForm::showLinesToolStripMenuItem1_Click);
+			// 
 			// label4
 			// 
 			this->label4->AutoSize = true;
-			this->label4->Location = System::Drawing::Point(885, 449);
+			this->label4->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label4->Location = System::Drawing::Point(17, 46);
 			this->label4->Name = L"label4";
-			this->label4->Size = System::Drawing::Size(51, 20);
+			this->label4->Size = System::Drawing::Size(136, 22);
 			this->label4->TabIndex = 6;
-			this->label4->Text = L"label4";
+			this->label4->Text = L"No Of Cycles: 0";
 			// 
 			// label5
 			// 
 			this->label5->AutoSize = true;
-			this->label5->Location = System::Drawing::Point(825, 197);
+			this->label5->Location = System::Drawing::Point(24, 140);
 			this->label5->Name = L"label5";
 			this->label5->Size = System::Drawing::Size(110, 20);
 			this->label5->TabIndex = 7;
@@ -307,7 +379,7 @@ namespace Simulator {
 			// label6
 			// 
 			this->label6->AutoSize = true;
-			this->label6->Location = System::Drawing::Point(825, 240);
+			this->label6->Location = System::Drawing::Point(25, 183);
 			this->label6->Name = L"label6";
 			this->label6->Size = System::Drawing::Size(40, 20);
 			this->label6->TabIndex = 7;
@@ -315,14 +387,14 @@ namespace Simulator {
 			// 
 			// textBox1
 			// 
-			this->textBox1->Location = System::Drawing::Point(978, 191);
+			this->textBox1->Location = System::Drawing::Point(151, 134);
 			this->textBox1->Name = L"textBox1";
 			this->textBox1->Size = System::Drawing::Size(100, 26);
 			this->textBox1->TabIndex = 8;
 			// 
 			// textBox2
 			// 
-			this->textBox2->Location = System::Drawing::Point(978, 234);
+			this->textBox2->Location = System::Drawing::Point(151, 177);
 			this->textBox2->Name = L"textBox2";
 			this->textBox2->Size = System::Drawing::Size(100, 26);
 			this->textBox2->TabIndex = 8;
@@ -330,7 +402,7 @@ namespace Simulator {
 			// checkBox1
 			// 
 			this->checkBox1->AutoSize = true;
-			this->checkBox1->Location = System::Drawing::Point(825, 281);
+			this->checkBox1->Location = System::Drawing::Point(22, 85);
 			this->checkBox1->Name = L"checkBox1";
 			this->checkBox1->RightToLeft = System::Windows::Forms::RightToLeft::Yes;
 			this->checkBox1->Size = System::Drawing::Size(177, 24);
@@ -341,33 +413,35 @@ namespace Simulator {
 			// comboBox3
 			// 
 			this->comboBox3->FormattingEnabled = true;
-			this->comboBox3->Location = System::Drawing::Point(853, 357);
+			this->comboBox3->Location = System::Drawing::Point(151, 241);
 			this->comboBox3->Name = L"comboBox3";
 			this->comboBox3->Size = System::Drawing::Size(100, 28);
 			this->comboBox3->TabIndex = 11;
 			// 
 			// label7
 			// 
-			this->label7->AutoSize = true;
-			this->label7->Location = System::Drawing::Point(831, 323);
+			this->label7->Location = System::Drawing::Point(14, 231);
 			this->label7->Name = L"label7";
-			this->label7->Size = System::Drawing::Size(326, 20);
+			this->label7->Size = System::Drawing::Size(113, 81);
 			this->label7->TabIndex = 7;
 			this->label7->Text = L"Hidden and Output Layer Activation Function";
+			this->label7->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
 			// 
 			// label8
 			// 
 			this->label8->AutoSize = true;
-			this->label8->Location = System::Drawing::Point(885, 490);
+			this->label8->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label8->Location = System::Drawing::Point(17, 83);
 			this->label8->Name = L"label8";
-			this->label8->Size = System::Drawing::Size(51, 20);
+			this->label8->Size = System::Drawing::Size(70, 22);
 			this->label8->TabIndex = 6;
-			this->label8->Text = L"label8";
+			this->label8->Text = L"Error: 0";
 			// 
 			// label9
 			// 
 			this->label9->AutoSize = true;
-			this->label9->Location = System::Drawing::Point(825, 154);
+			this->label9->Location = System::Drawing::Point(24, 91);
 			this->label9->Name = L"label9";
 			this->label9->Size = System::Drawing::Size(111, 20);
 			this->label9->TabIndex = 7;
@@ -375,74 +449,170 @@ namespace Simulator {
 			// 
 			// textBox3
 			// 
-			this->textBox3->Location = System::Drawing::Point(978, 148);
+			this->textBox3->Location = System::Drawing::Point(151, 91);
 			this->textBox3->Name = L"textBox3";
 			this->textBox3->Size = System::Drawing::Size(100, 26);
 			this->textBox3->TabIndex = 8;
 			// 
 			// chart1
 			// 
-			chartArea1->AxisX->MajorGrid->LineWidth = 0;
-			chartArea1->AxisY->MajorGrid->LineWidth = 0;
-			chartArea1->Name = L"ChartArea1";
-			this->chart1->ChartAreas->Add(chartArea1);
-			legend1->Name = L"Legend1";
-			this->chart1->Legends->Add(legend1);
-			this->chart1->Location = System::Drawing::Point(832, 543);
+			chartArea4->AxisX->MajorGrid->LineWidth = 0;
+			chartArea4->AxisY->MajorGrid->LineWidth = 0;
+			chartArea4->Name = L"ChartArea1";
+			this->chart1->ChartAreas->Add(chartArea4);
+			legend4->Name = L"Legend1";
+			this->chart1->Legends->Add(legend4);
+			this->chart1->Location = System::Drawing::Point(12, 17);
 			this->chart1->Name = L"chart1";
-			series1->ChartArea = L"ChartArea1";
-			series1->ChartType = System::Windows::Forms::DataVisualization::Charting::SeriesChartType::Spline;
-			series1->IsVisibleInLegend = false;
-			series1->Legend = L"Legend1";
-			series1->Name = L"Series1";
-			series1->XValueType = System::Windows::Forms::DataVisualization::Charting::ChartValueType::Double;
-			series1->YValueType = System::Windows::Forms::DataVisualization::Charting::ChartValueType::Double;
-			this->chart1->Series->Add(series1);
-			this->chart1->Size = System::Drawing::Size(351, 300);
+			series4->ChartArea = L"ChartArea1";
+			series4->ChartType = System::Windows::Forms::DataVisualization::Charting::SeriesChartType::Spline;
+			series4->IsVisibleInLegend = false;
+			series4->Legend = L"Legend1";
+			series4->Name = L"Series1";
+			series4->XValueType = System::Windows::Forms::DataVisualization::Charting::ChartValueType::Double;
+			series4->YValueType = System::Windows::Forms::DataVisualization::Charting::ChartValueType::Double;
+			this->chart1->Series->Add(series4);
+			this->chart1->Size = System::Drawing::Size(552, 426);
 			this->chart1->TabIndex = 12;
 			this->chart1->Text = L"chart1";
 			// 
 			// comboBox4
 			// 
 			this->comboBox4->FormattingEnabled = true;
-			this->comboBox4->Location = System::Drawing::Point(978, 357);
+			this->comboBox4->Location = System::Drawing::Point(151, 275);
 			this->comboBox4->Name = L"comboBox4";
 			this->comboBox4->Size = System::Drawing::Size(100, 28);
 			this->comboBox4->TabIndex = 11;
+			// 
+			// panel1
+			// 
+			this->panel1->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+			this->panel1->Controls->Add(this->label10);
+			this->panel1->Controls->Add(this->comboBox1);
+			this->panel1->Controls->Add(this->label1);
+			this->panel1->Controls->Add(this->label9);
+			this->panel1->Controls->Add(this->textBox3);
+			this->panel1->Controls->Add(this->comboBox4);
+			this->panel1->Controls->Add(this->textBox2);
+			this->panel1->Controls->Add(this->comboBox3);
+			this->panel1->Controls->Add(this->label5);
+			this->panel1->Controls->Add(this->label7);
+			this->panel1->Controls->Add(this->label6);
+			this->panel1->Controls->Add(this->textBox1);
+			this->panel1->Location = System::Drawing::Point(1156, 49);
+			this->panel1->Name = L"panel1";
+			this->panel1->Size = System::Drawing::Size(275, 319);
+			this->panel1->TabIndex = 13;
+			// 
+			// label10
+			// 
+			this->label10->AutoSize = true;
+			this->label10->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label10->Location = System::Drawing::Point(33, 0);
+			this->label10->Name = L"label10";
+			this->label10->Size = System::Drawing::Size(179, 29);
+			this->label10->TabIndex = 12;
+			this->label10->Text = L"Network Config";
+			// 
+			// panel2
+			// 
+			this->panel2->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+			this->panel2->Controls->Add(this->label11);
+			this->panel2->Controls->Add(this->label2);
+			this->panel2->Controls->Add(this->comboBox2);
+			this->panel2->Controls->Add(this->checkBox1);
+			this->panel2->Controls->Add(this->label3);
+			this->panel2->Location = System::Drawing::Point(851, 51);
+			this->panel2->Name = L"panel2";
+			this->panel2->Size = System::Drawing::Size(286, 187);
+			this->panel2->TabIndex = 14;
+			// 
+			// label11
+			// 
+			this->label11->AutoSize = true;
+			this->label11->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label11->Location = System::Drawing::Point(42, 0);
+			this->label11->Name = L"label11";
+			this->label11->Size = System::Drawing::Size(138, 29);
+			this->label11->TabIndex = 15;
+			this->label11->Text = L"Data Config";
+			// 
+			// panel3
+			// 
+			this->panel3->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+			this->panel3->Controls->Add(this->label12);
+			this->panel3->Controls->Add(this->label4);
+			this->panel3->Controls->Add(this->label8);
+			this->panel3->Location = System::Drawing::Point(851, 244);
+			this->panel3->Name = L"panel3";
+			this->panel3->Size = System::Drawing::Size(286, 124);
+			this->panel3->TabIndex = 15;
+			// 
+			// label12
+			// 
+			this->label12->AutoSize = true;
+			this->label12->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label12->Location = System::Drawing::Point(60, 0);
+			this->label12->Name = L"label12";
+			this->label12->Size = System::Drawing::Size(147, 29);
+			this->label12->TabIndex = 15;
+			this->label12->Text = L"Training Info";
+			// 
+			// panel4
+			// 
+			this->panel4->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+			this->panel4->Controls->Add(this->chart1);
+			this->panel4->Location = System::Drawing::Point(851, 374);
+			this->panel4->Name = L"panel4";
+			this->panel4->Size = System::Drawing::Size(580, 470);
+			this->panel4->TabIndex = 16;
+			// 
+			// panel5
+			// 
+			this->panel5->BorderStyle = System::Windows::Forms::BorderStyle::Fixed3D;
+			this->panel5->Controls->Add(this->pictureBox1);
+			this->panel5->Location = System::Drawing::Point(7, 48);
+			this->panel5->Name = L"panel5";
+			this->panel5->Size = System::Drawing::Size(832, 824);
+			this->panel5->TabIndex = 18;
+			// 
+			// openFileDialog1
+			// 
+			this->openFileDialog1->FileName = L"openFileDialog1";
+			this->openFileDialog1->ShowHelp = true;
 			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(9, 20);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(1195, 866);
-			this->Controls->Add(this->chart1);
-			this->Controls->Add(this->comboBox4);
-			this->Controls->Add(this->comboBox3);
-			this->Controls->Add(this->checkBox1);
-			this->Controls->Add(this->textBox2);
-			this->Controls->Add(this->textBox3);
-			this->Controls->Add(this->textBox1);
-			this->Controls->Add(this->label7);
-			this->Controls->Add(this->label9);
-			this->Controls->Add(this->label6);
-			this->Controls->Add(this->label5);
-			this->Controls->Add(this->label8);
-			this->Controls->Add(this->label4);
-			this->Controls->Add(this->label3);
-			this->Controls->Add(this->label2);
-			this->Controls->Add(this->label1);
-			this->Controls->Add(this->comboBox2);
-			this->Controls->Add(this->comboBox1);
-			this->Controls->Add(this->pictureBox1);
+			this->ClientSize = System::Drawing::Size(1453, 884);
+			this->Controls->Add(this->panel5);
+			this->Controls->Add(this->panel4);
+			this->Controls->Add(this->panel3);
+			this->Controls->Add(this->panel2);
+			this->Controls->Add(this->panel1);
 			this->Controls->Add(this->menuStrip1);
 			this->MainMenuStrip = this->menuStrip1;
 			this->Margin = System::Windows::Forms::Padding(4, 5, 4, 5);
+			this->MaximumSize = System::Drawing::Size(1475, 940);
+			this->MinimumSize = System::Drawing::Size(1475, 940);
 			this->Name = L"MyForm";
 			this->Text = L"Multilayer Perceptron Simulator";
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->EndInit();
 			this->menuStrip1->ResumeLayout(false);
 			this->menuStrip1->PerformLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->chart1))->EndInit();
+			this->panel1->ResumeLayout(false);
+			this->panel1->PerformLayout();
+			this->panel2->ResumeLayout(false);
+			this->panel2->PerformLayout();
+			this->panel3->ResumeLayout(false);
+			this->panel3->PerformLayout();
+			this->panel4->ResumeLayout(false);
+			this->panel5->ResumeLayout(false);
 			this->ResumeLayout(false);
 			this->PerformLayout();
 
@@ -479,11 +649,11 @@ namespace Simulator {
 		System::Void randomToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e);
 		
 		//Drawing lines and samples
-		void Draw_Lines_n_samples();
+		void Draw_Lines();
+		void Draw_Samples();
 
 		//Adding new sample
 		void Add_Sample(int selected_class, int x, int y);
-
 
 		//Batch-Normalization
 		void BatchNormalize();
@@ -506,6 +676,7 @@ namespace Simulator {
 		std::string get_Activation_Function_GUI(int SelectedIndex);	//get combobox string
 
 		//Painting PictureBox
+		int Test_Sample_Size, *Test_Output; bool test_state;
 		System::Void pictureBox1_Paint(System::Object^  sender, System::Windows::Forms::PaintEventArgs^  e) {
 			Pen ^pen = gcnew Pen(Color::Black);
 			e->Graphics->DrawLine(pen, 0, pictureBox1->Height / 2, pictureBox1->Width, pictureBox1->Height / 2);
@@ -518,8 +689,22 @@ namespace Simulator {
 			for (int i = 0; i < pictureBox1->Height; i = i + 50) {
 				e->Graphics->DrawString(((pictureBox1->Height / 2) - i).ToString(), gcnew System::Drawing::Font("Arial", 6), Brushes::Black, pictureBox1->Width / 2, i);
 			}
+			
+			Draw_Lines(); Draw_Samples();
 
-			Draw_Lines_n_samples();
+			//Adding colours to picturebox
+			if (test_state) {
+				int i = 0;
+				for (int x = 0; x < pictureBox1->Width; x += Test_Sample_Size) {
+					for (int y = 0; y < pictureBox1->Height; y += Test_Sample_Size) {
+						int index = Test_Output[i];
+						SolidBrush ^brush = gcnew SolidBrush(Color::FromArgb(65, color[index].R, color[index].G, color[index].B));
+						e->Graphics->FillRectangle(brush, x, y, Test_Sample_Size, Test_Sample_Size);
+						i++;
+					}
+				}
+				test_state = false;
+			}
 		}
 
 		//when picturebox is clicked
@@ -546,25 +731,13 @@ namespace Simulator {
 			for (int i = 1; i <= no_classes; i++) comboBox2->Items->Add(i.ToString());
 		}
 
-		/*
-		System::Void trackBar1_Scroll(System::Object^  sender, System::EventArgs^  e) {
-			bool increase = (trackBar1->Value > trackbar_scale) ? true : false;
-			int rate = 2;
-			for (int i = 0; i < no_samples; i++) {
-				for (int j = 0; j < no_features; j++) {
-					Data[i].X[j] = increase ? Data[i].X[j] * rate : Data[i].X[j] / rate;
-				}
-			}
-			if (trained) {
-				for (int i = 0; i < no_classes; i++) {
-					weight[i][no_features] = increase ? weight[i][no_features] * rate : weight[i][no_features] / rate;
-				}
-			}
-			trackbar_scale=trackBar1->Value;
-			pictureBox1->Refresh();
-			Draw_Lines_n_samples();
+		System::Void showSamplesToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
+			Draw_Samples();
 		}
-		*/
+		
+		System::Void showLinesToolStripMenuItem1_Click(System::Object^  sender, System::EventArgs^  e) {
+			Draw_Lines();
+		}
 
 		void clear_Data() {
 			for (int i = 0; i < this->first_HL_no_neurons; i++) {
@@ -601,11 +774,13 @@ namespace Simulator {
 			comboBox1->SelectedIndex = -1;
 			comboBox2->SelectedIndex = -1;
 			comboBox3->SelectedIndex = -1;
+			comboBox4->SelectedIndex = -1;
 
 			checkBox1->Checked = false;
 
 			textBox1->Text = "";
 			textBox2->Text = "";
+			textBox3->Text = "";
 
 			label3->Text = "";
 			label4->Text = "";
@@ -618,6 +793,5 @@ namespace Simulator {
 		System::Void clearToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
 			clear_Data();
 		}
-
 };
 }

@@ -63,6 +63,7 @@ void ANN::create_Network(int no_features, std::vector<int> hidden_layers, int n_
 	}
 }
 
+//Initializing weights and biases
 void ANN::initialize_weights() {
 	//initializing weights
 	weights[0].generate_Random_Elements();		//initializing W0
@@ -82,11 +83,10 @@ ANN::~ANN() {
 
 }
 
+//Feed Forward for single sample
 void ANN::Feed_Forward(Sample Data) {
 	Matrix<double> X(Data.X);
 	layers[0] = X.Transpose();	//feed forward input
-
-	//for(int i=0; i<no_weights; i++) biases[i].set_All_Elements(Bias);
 
 	//Feed forwarding
 	for (int i = 0; i < no_weights; i++) {
@@ -99,6 +99,7 @@ void ANN::Feed_Forward(Sample Data) {
 	}
 }
 
+// Back Propagation
 void ANN::Back_Propagate(Matrix<double> desired_output, bool momentum) {
 	for (int i = no_weights - 1; i >= 0; i--) {
 		if (i == no_weights - 1) {			//last layer's error (Output error)
@@ -111,47 +112,13 @@ void ANN::Back_Propagate(Matrix<double> desired_output, bool momentum) {
 		Matrix<double> delta_weight = (layers_error[i] * layers[i].Transpose()); //current delta weight
 		Matrix<double> delta_bias = layers_error[i];	//current delta bias
 
-		if(!momentum){
-			weights[i] = weights[i] + (delta_weight * learning_rate);
-			biases[i] = biases[i] + (delta_bias * learning_rate);
-
-			//delta_weights[i] = delta_weight;	
-			//delta_biases[i] = delta_bias;	
-			delta_weights[i] = delta_weight * learning_rate;
-			delta_biases[i] = delta_bias * learning_rate;
-		}
-		else{
-			double beta = 0.99;
-
-			weights[i] = weights[i] + (delta_weight * learning_rate) + (delta_weights[i] * beta);
-			biases[i] = biases[i] + (delta_bias * learning_rate) + (delta_biases[i] * beta);
-
-			delta_weights[i] = delta_weight * learning_rate;
-			delta_biases[i] = delta_bias * learning_rate;	 
-			//delta_weights[i] = (delta_weight * learning_rate) + (delta_weights[i] * beta);
-			//delta_biases[i] = (delta_bias * learning_rate) + (delta_biases[i] * beta);
-		}
-
-		/*
-		delta_weights[i] = delta_weight;
-		delta_biases[i] = delta_bias;
-
-		or
-
-		delta_weights[i] = delta_weight * learning_rate; 
-		delta_biases[i] = delta_bias * learning_rate;
+		double beta = momentum? 0.9: 0;	//with momentum is 0.9 else 0
 		
-		or
+		delta_weights[i] = (delta_weights[i]*beta)  + (delta_weight*(1 - beta));	//90%old weight + 10%new weight
+		weights[i] = weights[i] + (delta_weights[i]*learning_rate);
 
-		delta_weights[i] = (delta_weight * learning_rate) + (delta_weights[i] * beta); 
-		delta_biases[i] = (delta_bias * learning_rate) + (delta_biases[i] * beta);
-		*/
-
-		/*
-		Matrix<double> delta_weight = (layers_error[i] * layers[i].Transpose())*learning_rate;
-		weights[i] = weights[i] + delta_weight;
-		biases[i] = biases[i] + (layers_error[i] * learning_rate);
-		*/
+		delta_biases[i] = delta_bias * learning_rate;
+		biases[i] = biases[i] + (delta_bias * learning_rate);
 	}
 }
 
@@ -165,6 +132,135 @@ double ANN::quadratic_Cost(const Matrix<double> &true_output, const Matrix<doubl
 		}
 	}
 	return cost * 0.5;
+}
+
+void ANN::load_network(std::string filename) {
+	try {
+		std::ifstream inData(filename, std::ios::in);
+		if (!inData) throw std::ios::failure("Error opening file!");
+
+		std::vector<int> layers_vec;
+		std::vector<Matrix<double>> weights_vec;
+		std::vector<Matrix<double>> biases_vec;
+
+		std::string line;
+		int weight = 0, bias = 0, c_layers = 0;
+		while (getline(inData, line)) {
+			if (line == ("Layer " + std::to_string(c_layers))) {
+				int layers;
+				inData >> layers;
+				layers_vec.push_back(layers);
+				c_layers++;
+			}
+			else if (line == "Hidden Layer Activation Function:") {
+				inData >> this->hidden_activation_type;
+			}
+			else if (line == "Output Layer Activation Function:") {
+				inData >> this->output_activation_type;
+			}
+			else if (line == "Learning Rate:") {
+				inData >> this->learning_rate;
+			}
+			else if (line == ("Weight " + std::to_string(weight))) {
+				Matrix<double> matrix;
+				inData >> matrix;
+				weights_vec.push_back(matrix);
+				weight++;
+			}
+			else if (line == ("Bias " + std::to_string(bias))) {
+				Matrix<double> matrix;
+				inData >> matrix;
+				biases_vec.push_back(matrix);
+				bias++;
+			}
+			else {}
+		}
+		inData.close();
+
+		/******* Creating Network *******/
+		this->no_layers = layers_vec.size();
+		this->no_weights = weights_vec.size();
+		this->no_features = layers_vec[0];
+		this->no_classes = layers_vec[no_layers - 1];
+		this->Bias = 1;
+
+		//creating layers
+		this->layers = new Matrix<double>[no_layers];
+		layers[0].resize(no_features, 1);
+		for (int i = 1; i < no_layers - 1; i++) {
+			layers[i].resize(layers_vec[i], 1);
+		}
+		layers[no_layers - 1].resize(no_classes, 1);
+
+		//weights
+		this->weights = new Matrix<double>[no_weights];
+		for (int i = 0; i < no_weights; i++) {
+			weights[i] = weights_vec[i];
+		}
+
+		//biases 
+		this->biases = new Matrix<double>[no_weights];
+		for (int i = 0; i < no_weights; i++) {
+			biases[i] = biases_vec[i];
+		}
+
+		//creating layers' error
+		this->layers_error = new Matrix<double>[no_weights];
+		for (int i = 0; i < no_weights - 1; i++) {
+			layers_error[i].resize(layers_vec[i + 1], 1);
+		}
+		layers_error[no_weights - 1].resize(no_classes, 1);
+
+		//creating change in weights
+		this->delta_weights = new Matrix<double>[no_weights];
+		for (int i = 0; i < no_weights; i++) {
+			delta_weights[i].resize(layers_error[i].get_Row(), layers[i].get_Row());
+			delta_weights[i].set_All_Elements(0);
+		}
+
+		//creating change in biases
+		this->delta_biases = new Matrix<double>[no_weights];
+		for (int i = 0; i < no_weights; i++) {
+			delta_biases[i].resize(layers_error[i].get_Row(), layers_error[i].get_Column());
+			delta_biases[i].set_All_Elements(0);
+		}
+	}
+	catch (const std::exception& e) {
+		std::cout << e.what() << std::endl;
+	}
+}
+
+void ANN::save_network(std::string filename) {
+	std::ofstream outData;
+	outData.open(filename);
+
+	for (int i = 0; i < this->no_layers; i++) {
+		outData << "Layer " << i << std::endl;
+		outData << layers[i].get_Row() << std::endl;
+	}
+	outData << std::endl;
+
+	outData << "Hidden Layer Activation Function:" << std::endl;
+	outData << hidden_activation_type << std::endl << std::endl;
+	outData << "Output Layer Activation Function:" << std::endl;
+	outData << output_activation_type << std::endl << std::endl;
+	outData << "Learning Rate:" << std::endl;
+	outData << learning_rate << std::endl << std::endl;
+
+	//Saving all weights
+	for (int i = 0; i < this->no_weights; i++) {
+		outData << "Weight " << i << std::endl;
+		outData << weights[i];
+		outData << std::endl;
+	}
+
+	//Saving all biases
+	for (int i = 0; i < this->no_weights; i++) {
+		outData << "Bias " << i << std::endl;
+		outData << this->biases[i];
+		outData << std::endl;
+	}
+	outData.close();
 }
 
 Matrix<double> ANN::get_layer(int l) {
@@ -244,133 +340,3 @@ void ANN::set_Output_Activation_Function(std::string output_activation_type){
 	this->output_activation_type = output_activation_type;
 }
 
-void ANN::load_network(std::string filename) {
-	try {
-		std::ifstream inData(filename, std::ios::in);
-		if (!inData) throw std::ios::failure("Error opening file!");
-
-		std::vector<int> layers_vec;
-		std::vector<Matrix<double>> weights_vec;
-		std::vector<Matrix<double>> biases_vec;
-		//std::string hidden_activation_type;
-		//std::string output_activation_type;
-
-		std::string line;
-		int weight = 0, bias = 0, c_layers = 0;
-		while (getline(inData, line)) {
-			if (line == ("Layer " + std::to_string(c_layers))) {
-				int layers;
-				inData >> layers;
-				layers_vec.push_back(layers);
-				c_layers++;
-			}
-			else if (line == "Hidden Layer Activation Function:") {
-				inData >> this->hidden_activation_type;
-			}
-			else if (line == "Output Layer Activation Function:") {
-				inData >> this->output_activation_type;
-			}
-			else if (line == "Learning Rate:") {
-				inData >> this->learning_rate;
-			}
-			else if (line == ("Weight " + std::to_string(weight))) {
-				Matrix<double> matrix;
-				inData >> matrix;
-				weights_vec.push_back(matrix);
-				weight++;
-			}
-			else if (line == ("Bias " + std::to_string(bias))) {
-				Matrix<double> matrix;
-				inData >> matrix;
-				biases_vec.push_back(matrix);
-				bias++;
-			}
-			else {}
-		}
-		inData.close();
-
-		/******* Creating Network *******/
-		this->no_layers = layers_vec.size();
-		this->no_weights = weights_vec.size();
-		this->no_features = layers_vec[0];
-		this->no_classes = layers_vec[no_layers-1];
-		this->Bias = 1;
-
-		//creating layers
-		this->layers = new Matrix<double>[no_layers];
-		layers[0].resize(no_features, 1);
-		for (int i = 1; i < no_layers-1; i++) {
-			layers[i].resize(layers_vec[i], 1);
-		}
-		layers[no_layers - 1].resize(no_classes, 1);
-
-		//weights
-		this->weights = new Matrix<double>[no_weights];
-		for (int i = 0; i < no_weights; i++) {
-			weights[i]=weights_vec[i];
-		}
-
-		//biases 
-		this->biases = new Matrix<double>[no_weights];
-		for (int i = 0; i < no_weights; i++) {
-			biases[i]=biases_vec[i];
-		}
-
-		//creating layers' error
-		this->layers_error = new Matrix<double>[no_weights];
-		for (int i = 0; i < no_weights - 1; i++) {
-			layers_error[i].resize(layers_vec[i+1], 1);
-		}
-		layers_error[no_weights - 1].resize(no_classes, 1);
-
-		//creating change in weights
-		this->delta_weights = new Matrix<double>[no_weights];
-		for (int i = 0; i < no_weights; i++) {
-			delta_weights[i].resize(layers_error[i].get_Row(), layers[i].get_Row());
-			delta_weights[i].set_All_Elements(0);
-		}
-
-		//creating change in biases
-		this->delta_biases = new Matrix<double>[no_weights];
-		for (int i = 0; i < no_weights; i++) {
-			delta_biases[i].resize(layers_error[i].get_Row(), layers_error[i].get_Column());
-			delta_biases[i].set_All_Elements(0);
-		}
-	}
-	catch (const std::exception& e) {
-		std::cout << e.what() << std::endl;
-	}
-}
-
-void ANN::save_network(std::string filename) {
-	std::ofstream outData;
-	outData.open(filename);
-
-	for (int i = 0; i < this->no_layers; i++) {
-		outData << "Layer " <<i<< std::endl;
-		outData << layers[i].get_Row() <<std::endl;
-	}
-	outData << std::endl;
-
-	outData << "Hidden Layer Activation Function:" << std::endl;
-	outData << hidden_activation_type << std::endl<< std::endl;
-	outData << "Output Layer Activation Function:" << std::endl;
-	outData << output_activation_type << std::endl<< std::endl;
-	outData << "Learning Rate:" << std::endl;
-	outData << learning_rate << std::endl << std::endl;
-
-	//Saving all weights
-	for (int i = 0; i < this->no_weights; i++) {
-		outData << "Weight " << i << std::endl;
-		outData << weights[i];
-		outData << std::endl;
-	}
-
-	//Saving all biases
-	for (int i = 0; i < this->no_weights; i++) {
-		outData << "Bias " << i << std::endl;
-		outData << this->biases[i];
-		outData << std::endl;
-	}
-	outData.close();
-}
