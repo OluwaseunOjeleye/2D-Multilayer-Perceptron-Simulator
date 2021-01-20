@@ -20,13 +20,11 @@ MLP uses Feed-Forward and Backpropagation for solving supervised learning proble
 MLP neural network was implemented using  using [matrices](https://github.com/OluwaseunOjeleye/2D-Multilayer-Perceptron-Simulator/blob/master/ANN/matrix.h) and its codes can be found [here](https://github.com/OluwaseunOjeleye/2D-Multilayer-Perceptron-Simulator/blob/master/ANN/ANN.h). This implementation can be run and used independently of the simulator as a C++ user library.
 
 ## 2D Simulator
-The simulator is a 2D Cartesian coordinate system that accepts samples (X<sub>i</sub>, Y<sub>i</sub>) of a specified class from a user and simulates either MLP Training or Testing operation using the samples.
-<p align="center">
-<img src="images/system.png" width="500">
-</p>
+The simulator is a 2D Cartesian coordinate system that accepts samples (X<sub>i</sub>, Y<sub>i</sub>) of a specified class from a user and simulates either MLP Training or Testing operation using the samples. 
  
 ### Features
 * Single and multi layer perceptron support
+  <img src="images/system.png" width="500" align="right">
 * Supported methods
   * Batch Gradient descent
 * Supported hidden layer activation functions
