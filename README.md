@@ -54,19 +54,13 @@ The simulator is a 2D Cartesian coordinate system that accepts samples (X<sub>i<
 ## Problems
 Example of problems solved with the simulator are:
 #### 1. XOR Problem
-<p align="center">
  <img src="images/8.png" width="500">
-</p>
 
 #### 2. Circular Data
-<p align="center">
  <img src="images/6.png" width="500">
-</p>
 
 #### 3. Spiral Data
-<p align="center">
  <img src="images/3.png" width="500">
-</p>
 
 ## Author
 * **Jamiu Oluwaseun Ojeleye**
