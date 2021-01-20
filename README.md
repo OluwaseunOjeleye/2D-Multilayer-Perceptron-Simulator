@@ -18,7 +18,7 @@ MLP neural network was implemented using  using [matrices](https://github.com/Ol
 ## 2D Simulator
 The simulator is a 2D Cartesian coordinate system that accepts samples (X<sub>i</sub>, Y<sub>i</sub>) of a specified class from a user and simulates either MLP Training or Testing operation on the samples.
 
-<img src="images/system.png" width="500">
+<img src="images/system.png">
 
 ### Features
 * Single and multi layer perceptron support
