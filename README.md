@@ -23,31 +23,32 @@ MLP neural network was implemented using  using [matrices](https://github.com/Ol
 The simulator is a 2D Cartesian coordinate system that accepts samples (X<sub>i</sub>, Y<sub>i</sub>) of a specified class from a user and simulates either MLP Training or Testing operation using the samples. 
  
 ### Features
-* Single and multi layer perceptron support
+Features this implementation supports include:
+* Single and multi-layer perceptron neural network configuration
   <img src="images/system.png" width="500" align="right">
-* Supported methods
-  * Batch Gradient descent
-* Supported hidden layer activation functions
+* Gradient descent variants
+  * Batch gradient descent
+* Hidden layer activation functions
   * Sigmoid
   * Bipolar sigmoid
   * Tanh
   * Relu
   * Leaky relu
   * Swish
-* Supported optimizers
+* Optimization algorithm
   * Momentum
-* Supported preprocessing operations
+* Preprocessing operations
   * Batch Normalization
-* Supported output layer activation functions
+* Output layer activation functions
   * Sigmoid
   * Bipolar sigmoid
   * Tanh
   * Relu
   * Leaky relu
   * Swish
-* Supported loss functions
+* Loss functions
   * Quadratic/L2 loss function
-* Supports loading and saving of samples and network
+* Loading and saving of samples and network
 
 ## Problems
 Example of problems solved with the simulator are:
