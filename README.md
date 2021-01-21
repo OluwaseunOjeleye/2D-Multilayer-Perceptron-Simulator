@@ -27,7 +27,7 @@ Features this implementation supports include:
 * Single and multi-layer perceptron neural network configuration
   <img src="images/system.png" width="500" align="right">
 * Gradient descent variants
-  * Batch gradient descent
+  * Stochastic gradient descent
 * Hidden layer activation functions
   * Sigmoid
   * Bipolar sigmoid
