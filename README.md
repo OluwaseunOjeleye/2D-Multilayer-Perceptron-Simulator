@@ -1,5 +1,5 @@
 # 2D Multilayer Perceptron Simulator
-This is the implementation of a simulator that classifies 2D data into two classes or multi-classes using a multi-layer perceptron(MLP).
+This is the implementation of a simulator that classifies 2D data into two classes or multi-classes using a multi-layer perceptron(MLP). It was developed using Visual C++ and it can be used for learning and understanding Artificial Neural Network concepts.
 <p align="center">
  <img src="images/5.png">
 </p>
